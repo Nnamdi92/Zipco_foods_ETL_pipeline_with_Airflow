@@ -12,112 +12,169 @@ Zipco Foods operates across multiple outlets and generates large volumes of tran
 
 ## ⚙️ Tech Stack
 
-| Component         | Description                                                 |
-|------------------|-------------------------------------------------------------|
-| **Python**       | Core ETL scripting and data processing using `pandas`       |
-| **Apache Airflow** | Orchestration and scheduling of the ETL pipeline            |
-| **Azure Blob Storage** | Centralized cloud storage for cleaned data                  |
-| **GitHub**        | Version control and collaboration                           |
-| **Pandas/NumPy** | Data wrangling and transformation                           |
+| Component             | Description                                               |
+|----------------------|-----------------------------------------------------------|
+| **Python**           | Core ETL scripting and data processing using `pandas`     |
+| **Apache Airflow**   | Orchestration and scheduling of the ETL pipeline          |
+| **Azure Blob Storage** | Centralized cloud storage for cleaned data             |
+| **GitHub**           | Version control and collaboration                         |
+| **Pandas / NumPy**   | Data wrangling and transformation                         |
 
 ---
 
 ## 📁 Project Structure
 
 ```bash
-zipco_project/
-│
-├── dags/
-│   └── dag_script.py               # Defines the Airflow DAG and task flow
-│
-├── Extraction.py                   # Reads raw CSV data
-├── Transformation.py              # Cleans and normalizes the data
-├── Loading.py                     # Uploads cleaned data to Azure Blob Storage
-│
+zipco_transaction/
 ├── data/
-│   └── zipco_transaction.csv       # Raw input data
-│   └── clean_data.csv              # Cleaned dataset
-│   └── products.csv                # Normalized products table
-│   └── customers.csv               # Normalized customers table
-│   └── staff.csv                   # Normalized staff table
-│   └── transactions.csv            # Final transactions table
-│
-└── .env                            # Stores Azure credentials
+│   ├── zipco_transaction.csv
+│   ├── clean_data.csv
+│   ├── products.csv
+│   ├── customers.csv
+│   ├── staff.csv
+│   └── transactions.csv
+├── zipcovenv/                   # Virtual environment (excluded from Git)
+├── .env                         # Azure credentials
+├── .gitignore
+├── create_user.txt
+├── dag_script.py               # Defines Airflow DAG
+├── Etl_pipeline.ipynb
+├── Extraction.py
+├── Transformation.py
+├── Loading.py
+├── README.md
+└── requirements.txt
+```
 
-🔄 Workflow Summary
-Extraction
+---
 
-Reads zipco_transaction.csv into a pandas DataFrame.
+## 🔄 Workflow Summary
 
-Transformation
+### 🟦 Extraction
 
-Removes duplicates
+- Reads `zipco_transaction.csv` into a pandas DataFrame
 
-Handles missing values
+### 🟧 Transformation
 
-Normalizes into 2NF/3NF: Products, Customers, Staff, Transactions
+- Removes duplicates  
+- Handles missing values  
+- Normalizes into 2NF/3NF: Products, Customers, Staff, Transactions
 
-Loading
+### 🟩 Loading
 
-Saves transformed files
+- Saves transformed files  
+- Uploads all CSVs to Azure Blob Storage
 
-Uploads to Azure Blob Storage
+---
 
-The entire pipeline is orchestrated with Apache Airflow using a DAG (dag_script.py).
+## 📦 Airflow DAG Flow
 
-📦 Airflow DAG Flow
+```text
 extraction_layer ➝ transformation_layer ➝ loading_layer
-Each task is a Python function triggered by Airflow's PythonOperator.
+```
 
-☁️ Azure Integration
-The final cleaned datasets are stored in Azure Blob Storage under two folders:
+Each task is a Python function triggered by Airflow's `PythonOperator`.
 
-rawdata/cleaned_zipco_transaction_data.csv
+---
 
-cleaneddata/ → products.csv, customers.csv, staff.csv, transactions.csv
+## ☁️ Azure Integration
 
-Make sure to set up your Azure connection string and container name in a .env file:
+The cleaned datasets are uploaded to Azure Blob Storage under:
+
+- `rawdata/cleaned_zipco_transaction_data.csv`
+- `cleaneddata/products.csv`
+- `cleaneddata/customers.csv`
+- `cleaneddata/staff.csv`
+- `cleaneddata/transactions.csv`
+
+### 🔐 .env File
+
+Create a `.env` file with the following structure:
+
+```env
 AZURE_STORAGE_CONNECTION_STRING=your_connection_string_here
 CONTAINER_NAME=your_container_name
+```
 
-🚀 Running the Project
-1. Clone the repository:
+---
+
+## 🚀 Running the Project
+
+### 1. Clone the repository
+
+```bash
 git clone https://github.com/Nnamdi92/Zipco_foods_ETL_pipeline_with_Airflow.git
-cd zipco-etl-pipeline
+cd Zipco_foods_ETL_pipeline_with_Airflow
+```
 
-2. Create a virtual environment:
+### 2. Create a virtual environment
+
+```bash
 python3 -m venv venv
-source venv/bin/activate
+source venv/bin/activate  # On Windows use: venv\Scripts\activate
+```
 
-3. Install dependencies:
+### 3. Install dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
-4. Start Airflow:
+### 4. Start Airflow
+
+```bash
 airflow standalone
+```
 
-5. Open the UI: http://localhost:8080
- Username/Password: set via airflow users create or shown at first launch
+### 5. Open the Airflow UI
 
-6. Trigger the DAG named: real_zipco_dag
+Visit: [http://localhost:8080](http://localhost:8080)
 
-📈 Output
-The pipeline creates and uploads the following datasets:
+Create a user if not automatically set:
 
-clean_data.csv
+```bash
+airflow users create --username  --firstname  --lastname  --role  --email  --password 
+```
 
-products.csv
+### 6. Trigger the DAG
 
-customers.csv
+Find and trigger the DAG named:
 
-staff.csv
+```bash
+real_zipco_dag
+```
 
-transactions.csv
+---
 
-All are stored in Azure Blob Storage and available for analytics.
+## 📈 Output
 
-📖 Case Study Reference
-This project was developed as part of a case study on Apache Airflow orchestration for Zipco Foods. 
+The pipeline creates and uploads the following cleaned datasets:
 
-👨‍💻 Author
-Nnamdi Echezona
-Email: echezonannamdi@gmail.com
+- `clean_data.csv`
+- `products.csv`
+- `customers.csv`
+- `staff.csv`
+- `transactions.csv`
+
+All are stored in Azure Blob Storage and available for analytics and dashboarding.
+
+---
+
+## 📖 Case Study Reference
+
+This project was developed as part of a case study on Apache Airflow orchestration for Zipco Foods.  
+
+
+---
+
+## 👨‍💻 Author
+
+**Nnamdi Echezona**  
+📧 [echezonannamdi@gmail.com](mailto:echezonannamdi@gmail.com)  
+
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License.
