@@ -1,0 +1,1 @@
+airflow users create --username admin --firstname nnamdi --lastname echezona --role Admin --email echezonannamdi@gmail.com
